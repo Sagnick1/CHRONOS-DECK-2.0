@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos-Deck 2.0</title>
+
+    <!-- CDN Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Local Styles -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <!-- CRT Overlay Effect -->
+    <div class="crt-overlay"></div>
+
+    <!-- Audio Elements -->
+    <audio id="access-granted-sound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="mission-complete-sound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+
+    <!-- Lock Screen -->
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-content">
+            <i data-lucide="fingerprint" class="lock-icon"></i>
+            <h1 class="glitch" data-text="CHRONOS-DECK 2.0">CHRONOS-DECK 2.0</h1>
+            <p id="lock-message">SYSTEM INITIALIZING...</p>
+            <div class="loading-container">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <div class="loading-text">LOADING CORE MODULES...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i data-lucide="cpu"></i>
+                <span>CD-2.0</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-view="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li data-view="ai-oracle">
+                    <i data-lucide="bot"></i>
+                    <span>AI Oracle</span>
+                </li>
+                <li data-view="focus-hub">
+                    <i data-lucide="focus"></i>
+                    <span>Focus Hub</span>
+                </li>
+                <li data-view="planner">
+                    <i data-lucide="calendar-check"></i>
+                    <span>Planner</span>
+                </li>
+            </ul>
+            <div class="user-status">
+                <div class="status-dot"></div>
+                <span>ONLINE</span>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+
+            <!-- Dashboard View -->
+            <section id="dashboard" class="view-section active">
+                <h2 class="section-title glitch" data-text="SYSTEM OVERVIEW">SYSTEM OVERVIEW</h2>
+                <div class="dashboard-grid">
+                    <div class="card stat-card">
+                        <h3>Tasks Pending</h3>
+                        <p id="pending-count" class="neon-text">0</p>
+                    </div>
+                    <div class="card stat-card">
+                        <h3>Focus Time</h3>
+                        <p id="total-focus-time" class="neon-text">0h</p>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Activity Log</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Oracle View -->
+            <section id="ai-oracle" class="view-section">
+                <h2 class="section-title glitch" data-text="AI ORACLE">AI ORACLE</h2>
+                <div class="terminal-container">
+                    <div id="chat-history" class="chat-history">
+                        <div class="message system">
+                            <span class="prefix">SYS:</span> Initializing connection to Gemini Neural Net... Connected.
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <span class="prompt-symbol">></span>
+                        <input type="text" id="ai-input" placeholder="Query the Oracle..." autocomplete="off">
+                        <button id="send-ai-btn"><i data-lucide="send"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Focus Hub View -->
+            <section id="focus-hub" class="view-section">
+                <h2 class="section-title glitch" data-text="FOCUS HUB">FOCUS HUB</h2>
+                <div class="focus-container">
+                    <div class="timer-circle">
+                        <svg class="progress-ring" width="300" height="300">
+                            <circle class="progress-ring__circle" stroke="var(--primary-color)" stroke-width="10"
+                                fill="transparent" r="140" cx="150" cy="150" />
+                        </svg>
+                        <div class="timer-display">
+                            <span id="time-left">25:00</span>
+                        </div>
+                    </div>
+                    <div class="timer-controls">
+                        <div class="task-selector-container">
+                            <label for="focus-task-select" class="neon-text small">SELECT MISSION:</label>
+                            <select id="focus-task-select" class="cyber-select">
+                                <option value="">-- FREESTYLE MODE --</option>
+                            </select>
+                        </div>
+                        <div class="timer-input-group">
+                            <input type="number" id="timer-duration" placeholder="Min" min="1" max="120" value="25">
+                            <button id="set-timer-btn" class="glow-btn small">SET</button>
+                        </div>
+                        <button id="start-timer-btn" class="glow-btn">INITIALIZE</button>
+                        <button id="reset-timer-btn" class="glow-btn">RESET</button>
+                        <button id="zen-mode-btn" class="glow-btn">ZEN MODE</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Planner & Analytics View -->
+            <section id="planner" class="view-section">
+                <h2 class="section-title glitch" data-text="PLANNER & DATA">PLANNER & DATA</h2>
+                <div class="planner-grid">
+                    <div class="card todo-card">
+                        <h3>Subject Planner</h3>
+                        <div class="add-task-form">
+                            <input type="text" id="subject-input" placeholder="Subject (e.g. Math)">
+                            <input type="number" id="time-input" placeholder="Mins" min="5" step="5">
+                            <input type="date" id="task-date">
+                            <button id="add-task-btn"><i data-lucide="plus"></i></button>
+                        </div>
+                        <ul id="task-list" class="task-list">
+                            <!-- Tasks injected here -->
+                        </ul>
+                    </div>
+                    <div class="card analytics-card">
+                        <h3>Subject Distribution (Today)</h3>
+                        <canvas id="subjectChart"></canvas>
+                        <div class="backup-controls">
+                            <button id="backup-btn" class="glow-btn small">DOWNLOAD DATA CORE</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Local Script -->
+    <script src="./script.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
